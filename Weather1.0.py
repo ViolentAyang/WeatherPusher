@@ -56,7 +56,7 @@ def get_week_day(date):
 
 
 def get_weather(name):
-    url = 'https://devapi.qweather.com/v7/weather/3d?location=118.89,31.90&key=47b86a73f47d421a82c745e73c5f28c7'
+    url = 'https://devapi.qweather.com/v7/weather/3d?location=118.89,31.90&key='
     res = requests.get(url)
     if res.json()['code'] == '200':
         data = res.json()
@@ -68,7 +68,7 @@ def get_weather(name):
 def send_qq(number):
     if get_weather(get_user(number)):
         data = get_weather(get_user(number))
-        url = 'https://qmsg.zendee.cn/send/0fe290811d6aabfab3ca6ab7145574c8?qq=' + number + '&msg=' + data
+        url = 'https://qmsg.zendee.cn/send/?qq=' + number + '&msg=' + data
         res = requests.get(url)
         if not res.json()['success']:
             send_mail(number + '@qq.com', '机器人出现故障，请联系管理员1972076517及时修复', 'Qmsg推送报错')
@@ -77,8 +77,8 @@ def send_qq(number):
 
 
 def send_mail(mail, content, title):
-    number = '2594187464@qq.com'
-    password = 'kxamsupkblvseacc'
+    number = '...@qq.com'
+    password = ''
     to_addr = mail
     smtp_server = 'smtp.qq.com'
     msg = MIMEText(content, 'plain', 'utf-8')
@@ -89,16 +89,11 @@ def send_mail(mail, content, title):
     server.login(number, password)
     server.sendmail(number, to_addr, msg.as_string())
 
+
 def main():
     dic = get_alluser()
     for i in dic:
-        url = "http://www.pushplus.plus/send?token=be5c64912ca54d5ab12bdb775f99fbed&title=健康打卡提醒&content="+get_weather(get_user(i))+"&template=markdown&topic=1"
-        requests.get(url)
-
-#def main():
-   # dic = get_alluser()
-   # for i in dic:
-    #    send_mail(i+'@qq.com',get_weather(get_user(i)),'每日天气推送')
+       send_mail(i+'@qq.com',get_weather(get_user(i)),'每日天气推送')
 
 
 if __name__ == '__main__':
